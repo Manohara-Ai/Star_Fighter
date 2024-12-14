@@ -3,7 +3,7 @@
 **Star Fighter** is a Command-Line Interface (CLI) game where the player controls a spaceship to navigate through an asteroid field and avoid collisions. The game uses **escape sequences** for terminal-based animation, and it implements **multithreading** with **mutex synchronization** for handling concurrent tasks like movement and collision detection.
 
 ## Game Overview
-In **Star Fighter**, the player must use their spaceship to dodge asteroids that fall across the screen. The game progresses with increasing difficulty as the number and speed of asteroids increase over time. The game ends when the spaceship collides with an asteroid. The player can control the spaceship using the keyboard, and the game offers a visual challenge with animated movement in the terminal.
+In **Star Fighter**, the player must use their spaceship to dodge asteroids that fall across the screen. The game progresses with increasing difficulty as the number and speed of asteroids increase over time. The game ends when the spaceship collides with an asteroid 5 times. The player can control the spaceship using the keyboard, 'a' to move spaceship left and 'd' to move spaceship right, and the game offers a visual challenge with animated movement in the terminal.
 
 ## Features
 - **Smooth CLI Animation:** Using escape sequences, the game renders moving objects, including the spaceship and asteroids.
