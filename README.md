@@ -19,11 +19,9 @@ In **Star Fighter**, the player must use their spaceship to dodge asteroids that
   - Game state management, including collision detection, is handled here.
   
 - **`helper.c`**: Contains utility functions used across the game.
-  - Functions for handling input (key presses).
-  - Functions for controlling the spaceship and generating asteroids.
-  - Functions for synchronizing threads and performing checks like collisions.
-
-- **`Makefile` (optional)**: You may want to include a Makefile for easier compilation.
+  - Functions for cli animation
+  - Functions to print game state
+  - Functions to read / write current game state
 
 ## Installation and Setup
 
