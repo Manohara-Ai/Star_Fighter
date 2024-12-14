@@ -23,20 +23,16 @@ void progress_bar();
 // This function exits the terminal on resizing
 void resize_kill();
 
-// This functions prints the spaceship
-void print_spaceship(int x, int y);
-
-// This functions prints the asteroid
-void print_asteroid(int x, int y);
+// This functions prints the score
+void print_score(int score);
 
 // This function reads game_state
 int read_game_state();
 
-// This function handles the spaceship position
-void* spaceship_thread(void* arg);
+// This function enables non blocking input
+void enable_non_blocking_input();
 
-// This function handles asteroid positions
-void* asteroid_thread(void* arg);
+// This function enables non blocking input
+void disable_non_blocking_input();
 
-// This function handles score and health
-void* score_health_thread(void* arg);
+void update_high_score(int new_high_score);

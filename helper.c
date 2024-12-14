@@ -4,6 +4,9 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <termios.h>
+#include <unistd.h> 
+
 #include "helper.h"
 
 #define RED "\033[31m"
@@ -58,7 +61,7 @@ void create_game_state_file() {
     // Write some initial data to the file (optional)
     fprintf(file, "Game state data...\n");
     fprintf(file, "Spaceship_x: 39\n");
-    fprintf(file, "Score: 0\n");
+    fprintf(file, "High score: 0\n");
       
     // Close the file after writing
     fclose(file);
@@ -84,7 +87,7 @@ void load_screen_animation() {
             create_game_state_file();
         } else {
             printf("Invalid input. Exiting...\n");
-            return;
+            exit(0);
         }
     } else {
         printf("Making game state...\n");
@@ -92,16 +95,8 @@ void load_screen_animation() {
     }
 
     // Show loading animation
-    for (int i = 0; i < 5; i++) {
-        printf("Loading");
-        for (int j = 0; j < i; j++) {
-            printf(".");
-            fflush(stdout);
-            usleep(500000); // Sleep for 0.5 seconds
-        }
-        printf("\r");
-    }
-    printf("Loading complete!\n");
+    progress_bar();
+    fflush(stdout);
 }
 
 // Function to move the cursor left or right
@@ -144,7 +139,7 @@ void progress_bar(int progress) {
         usleep(100000); // 100ms delay
     }
 
-    printf("\n" RED "Task Completed!\n" RESET);
+    printf("\n" RED "Loading complete!" RESET);
 }
 
 // Signal handler for resizing the terminal
@@ -160,16 +155,11 @@ void resize_kill() {
 	}
 }
 
-// Function to print the spaceship
-void print_spaceship(int x, int y) {
-    move_cursor(y, x);
-    printf("%s", spaceship);
-}
-
-// Function to print the asteroid
-void print_asteroid(int x, int y) {
-    move_cursor(y, x);
-    printf("%s", asteroid);
+// Function to print the score
+void print_score(int score) {
+    move_cursor(24, 0);
+    printf("Score: %d", score);
+    fflush(stdout);
 }
 
 // Function that will run in a separate thread
@@ -194,4 +184,69 @@ int read_game_state() {
 	return temp;
 }
 
+// Function to enable non-blocking input
+void enable_non_blocking_input() {
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &term);  // Get current terminal attributes
+    term.c_lflag &= ~(ICANON | ECHO);  // Disable canonical mode and echo
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);  // Apply changes immediately
+}
+
+// Function to restore terminal settings
+void disable_non_blocking_input() {
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &term);
+    term.c_lflag |= (ICANON | ECHO);  // Restore canonical mode and echo
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+// Function to update the high score if the current score is higher
+void update_high_score(int current_score) {
+    FILE *file = fopen("game_state.txt", "r");
+    if (file == NULL) {
+        printf("Error: Unable to open game state file for reading.\n");
+        return;
+    }
+
+    char lines[10][100];  // Array to hold each line in the file
+    int line_count = 0, existing_high_score = 0;
+
+    // Read all lines into the array
+    while (fgets(lines[line_count], sizeof(lines[line_count]), file)) {
+        if (strstr(lines[line_count], "High score:")) {
+            // Extract the existing high score from the line
+            sscanf(lines[line_count], "High score: %d", &existing_high_score);
+        }
+        line_count++;
+    }
+    fclose(file);
+
+    // Compare and update the high score if needed
+    if (current_score > existing_high_score) {
+        printf("New high score: %d! (Previous: %d)\n", current_score, existing_high_score);
+
+        for (int i = 0; i < line_count; i++) {
+            if (strstr(lines[i], "High score:")) {
+                // Correctly update the line in memory
+                sprintf(lines[i], "High score: %d\n", current_score);
+                break;
+            }
+        }
+
+        // Write the updated content back to the file
+        file = fopen("game_state.txt", "w");
+        if (file == NULL) {
+            printf("Error: Unable to open game state file for writing.\n");
+            return;
+        }
+
+        for (int i = 0; i < line_count; i++) {
+            fputs(lines[i], file);
+        }
+        fclose(file);
+        printf("High score updated successfully!\n");
+    } else {
+        printf("Current score (%d) did not beat the high score (%d).\n", current_score, existing_high_score);
+    }
+}
 
