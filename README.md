@@ -41,3 +41,5 @@ In **Star Fighter**, the player must use their spaceship to dodge asteroids that
 
 ## Contributor
 Manohara 
+
+Happy coding and good luck with your high score!
