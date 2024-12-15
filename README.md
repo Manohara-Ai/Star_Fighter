@@ -28,7 +28,7 @@ In **Star Fighter**, the player must use their spaceship to dodge asteroids that
 1. **Clone the repository** to your local machine:
 
    ```bash
-   git clone https://github.com/yourusername/starfighter.git
+   git clone https://github.com/Manohara-Ai/starfighter.git
    cd starfighter
 
 2. **Compile the game** using following command:
